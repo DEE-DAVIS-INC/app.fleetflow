@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FleetFlow Diagnostics</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #000;
+            color: #00ff00;
+            padding: 20px;
+            margin: 0;
+        }
+        .terminal {
+            background: #111;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #00ff00;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+        .success { color: #00ff00; }
+        .error { color: #ff0000; }
+        .warning { color: #ffff00; }
+        .info { color: #00ffff; }
+        h1 { 
+            text-align: center; 
+            color: #00ff00; 
+            text-shadow: 0 0 10px #00ff00;
+        }
+        .test { 
+            margin: 10px 0; 
+            padding: 10px;
+            border-left: 3px solid #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+        }
+        button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: monospace;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #00cc00;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <h1>🚛 FLEETFLOW DIAGNOSTIC TERMINAL</h1>
+        
+        <div class="test">
+            <span class="success">✅ STATUS:</span> HTML PAGE LOADED SUCCESSFULLY
+        </div>
+        
+        <div class="test">
+            <span class="success">✅ BROWSER:</span> <span id="browser-info"></span>
+        </div>
+        
+        <div class="test">
+            <span class="success">✅ JAVASCRIPT:</span> ENABLED AND RUNNING
+        </div>
+        
+        <div class="test">
+            <span class="success">✅ TIME:</span> <span id="current-time"></span>
+        </div>
+        
+        <div class="test">
+            <span class="info">🌐 CURRENT URL:</span> <span id="current-url"></span>
+        </div>
+        
+        <div class="test">
+            <span class="info">🔍 SERVER TEST:</span>
+            <div id="server-status">Testing...</div>
+        </div>
+        
+        <h2>🔧 AVAILABLE ACTIONS:</h2>
+        
+        <button onclick="window.location.href='/working.html'">📄 Basic Working Page</button>
+        <button onclick="window.location.href='/index.html'">🏠 Emergency Dashboard</button>
+        <button onclick="window.location.href='/debug.html'">🔧 Debug Page</button>
+        <button onclick="testServer()">🧪 Test Server</button>
+        <button onclick="window.location.reload()">🔄 Refresh Page</button>
+        
+        <h2>📋 TROUBLESHOOTING STEPS:</h2>
+        <div class="test">
+            <div class="warning">1. If you see this page, your server IS working</div>
+            <div class="warning">2. Try the buttons above to navigate</div>
+            <div class="warning">3. Check browser console (F12) for errors</div>
+            <div class="warning">4. Try clearing browser cache (Ctrl+F5)</div>
+            <div class="warning">5. Try a different browser or incognito mode</div>
+        </div>
+        
+        <div id="console-log"></div>
+    </div>
+    
+    <script>
+        // Update browser info
+        document.getElementById('browser-info').textContent = navigator.userAgent;
+        
+        // Update current URL
+        document.getElementById('current-url').textContent = window.location.href;
+        
+        // Update time
+        function updateTime() {
+            document.getElementById('current-time').textContent = new Date().toLocaleString();
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+        
+        // Test server connectivity
+        function testServer() {
+            const statusDiv = document.getElementById('server-status');
+            statusDiv.innerHTML = '<span class="warning">⏳ Testing server connectivity...</span>';
+            
+            const testUrls = [
+                '/working.html',
+                '/index.html',
+                '/debug.html',
+                '/test.html'
+            ];
+            
+            let results = [];
+            let completed = 0;
+            
+            testUrls.forEach(url => {
+                fetch(url)
+                    .then(response => {
+                        results.push(`<span class="success">✅ ${url} - OK (${response.status})</span>`);
+                    })
+                    .catch(error => {
+                        results.push(`<span class="error">❌ ${url} - FAILED (${error.message})</span>`);
+                    })
+                    .finally(() => {
+                        completed++;
+                        if (completed === testUrls.length) {
+                            statusDiv.innerHTML = results.join('<br>');
+                        }
+                    });
+            });
+        }
+        
+        // Auto-test server on load
+        setTimeout(testServer, 1000);
+        
+        // Log to console
+        console.log('🚛 FleetFlow Diagnostics loaded');
+        console.log('📅 Time:', new Date().toLocaleString());
+        console.log('🌐 URL:', window.location.href);
+        console.log('🔍 User Agent:', navigator.userAgent);
+        
+        // Add console messages to page
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            const logDiv = document.getElementById('console-log');
+            logDiv.innerHTML += '<div class="test"><span class="info">📝 CONSOLE:</span> ' + args.join(' ') + '</div>';
+        };
+    </script>
+</body>
+</html>

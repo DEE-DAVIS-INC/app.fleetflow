@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FleetFlow - Emergency Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .status {
+            background: #28a745;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .nav-link {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            margin: 5px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚛 FleetFlow Emergency Access</h1>
+        
+        <div class="status">
+            ✅ Static Server is Working!
+        </div>
+        
+        <p>If you can see this page, the development server is running but there may be an issue with the React application.</p>
+        
+        <p><strong>Current Time:</strong> <span id="time"></span></p>
+        
+        <h2>🔧 Troubleshooting</h2>
+        <ul>
+            <li>The Next.js server is responding to requests</li>
+            <li>This static HTML file is being served correctly</li>
+            <li>The issue is likely with the React application or its dependencies</li>
+        </ul>
+        
+        <h2>🧭 Navigation</h2>
+        <div>
+            <a href="/" class="nav-link">Main Dashboard</a>
+            <a href="/dispatch" class="nav-link">Dispatch Central</a>
+            <a href="/shippers" class="nav-link">Shipper Management</a>
+            <a href="/test.html" class="nav-link">Test Page</a>
+        </div>
+        
+        <h2>🚨 Emergency Actions</h2>
+        <p>If React pages are not working:</p>
+        <ol>
+            <li>Check browser console for JavaScript errors</li>
+            <li>Try hard refresh (Ctrl/Cmd + Shift + R)</li>
+            <li>Clear browser cache</li>
+            <li>Restart development server</li>
+        </ol>
+    </div>
+    
+    <script>
+        document.getElementById('time').textContent = new Date().toLocaleString();
+        setInterval(() => {
+            document.getElementById('time').textContent = new Date().toLocaleString();
+        }, 1000);
+    </script>
+</body>
+</html>

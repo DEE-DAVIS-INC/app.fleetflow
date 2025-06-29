@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FleetFlow Direct File Test</title>
+</head>
+<body style="background: blue; color: white; font-size: 40px; text-align: center; padding: 50px;">
+    <h1>🚛 FLEETFLOW FILE TEST</h1>
+    <p>This page opens directly from file system</p>
+    <p>Time: <span id="time"></span></p>
+    <div style="margin: 30px;">
+        <h2>Try these server URLs:</h2>
+        <a href="http://localhost:3000/red-test.html" style="color: yellow; display: block; margin: 10px;">
+            http://localhost:3000/red-test.html
+        </a>
+        <a href="http://localhost:8000/red-test.html" style="color: yellow; display: block; margin: 10px;">
+            http://localhost:8000/red-test.html
+        </a>
+        <a href="http://localhost:3000/working.html" style="color: yellow; display: block; margin: 10px;">
+            http://localhost:3000/working.html
+        </a>
+    </div>
+    
+    <script>
+        setInterval(() => {
+            document.getElementById('time').textContent = new Date().toLocaleString();
+        }, 1000);
+        
+        console.log('FleetFlow direct file test loaded');
+    </script>
+</body>
+</html>

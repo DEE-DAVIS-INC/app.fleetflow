@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FleetFlow WORKING!</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        h1 {
+            font-size: 4rem;
+            margin: 0 0 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .status {
+            font-size: 1.5rem;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(76, 175, 80, 0.8);
+            border-radius: 10px;
+        }
+        .links {
+            margin-top: 30px;
+        }
+        .links a {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        .links a:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        #time {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚛 FleetFlow</h1>
+        <div class="status">✅ SERVER IS WORKING!</div>
+        <p>If you can see this page, your server is running correctly.</p>
+        <div id="time"></div>
+        
+        <div class="links">
+            <a href="/index.html">📊 Full Dashboard</a>
+            <a href="/debug.html">🔧 Debug Info</a>
+            <a href="/test.html">🧪 Test Page</a>
+        </div>
+        
+        <div style="margin-top: 30px; font-size: 0.9rem; opacity: 0.7;">
+            <p>✅ Emergency server active</p>
+            <p>✅ Static files loading</p>
+            <p>✅ FleetFlow accessible</p>
+        </div>
+    </div>
+    
+    <script>
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('time').innerHTML = 
+                '🕐 ' + now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+        
+        console.log('🚛 FleetFlow emergency page loaded successfully!');
+        console.log('📅 Time:', new Date().toLocaleString());
+    </script>
+</body>
+</html>

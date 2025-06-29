@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FleetFlow Debug</title>
+    <style>
+        body { 
+            font-family: Arial; 
+            padding: 20px; 
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            text-align: center;
+        }
+        .debug-box {
+            background: rgba(0,0,0,0.7);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-box">
+        <h1>🚛 FleetFlow Debug Mode</h1>
+        <h2>✅ Static Server is Working!</h2>
+        <p>Time: <span id="time"></span></p>
+        <p>If you can see this, your server is responding.</p>
+        <h3>Next Steps:</h3>
+        <ul style="text-align: left;">
+            <li>✅ Server is online</li>
+            <li>⚠️ Check React app at <a href="/" style="color: #4ecdc4;">localhost:3000</a></li>
+            <li>🔧 Emergency mode: <a href="/index.html" style="color: #4ecdc4;">Dashboard</a></li>
+        </ul>
+    </div>
+    
+    <script>
+        setInterval(() => {
+            document.getElementById('time').textContent = new Date().toLocaleString();
+        }, 1000);
+    </script>
+</body>
+</html>
