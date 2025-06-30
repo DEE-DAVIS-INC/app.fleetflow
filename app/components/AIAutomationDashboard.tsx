@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import ClaudeDocumentGenerator from './ClaudeDocumentGenerator'
+import ClaudeRouteOptimizer from './ClaudeRouteOptimizer'
 
 interface AIInsight {
   type: 'route_optimization' | 'maintenance_prediction' | 'cost_optimization' | 'driver_analysis' | 'dispatch_optimization' | 'carrier_matching' | 'rate_optimization';
@@ -18,7 +20,7 @@ interface AutomationStatus {
 }
 
 export default function AIAutomationDashboard() {
-  const [selectedTab, setSelectedTab] = useState<'overview' | 'dispatch' | 'maintenance' | 'routes' | 'insights'>('overview');
+  const [selectedTab, setSelectedTab] = useState<'overview' | 'dispatch' | 'claude-routes' | 'claude-docs' | 'maintenance' | 'insights'>('overview');
   const [automationStatus, setAutomationStatus] = useState<AutomationStatus>({
     isRunning: false,
     lastUpdate: null,
@@ -272,8 +274,9 @@ export default function AIAutomationDashboard() {
           {[
             { id: 'overview', label: 'Overview', icon: '📊' },
             { id: 'dispatch', label: 'AI Dispatch', icon: '🚛' },
-            { id: 'maintenance', label: 'Maintenance', icon: '🔧' },
-            { id: 'routes', label: 'Routes', icon: '🗺️' },
+            { id: 'claude-routes', label: 'Claude Routes', icon: '🗺️' },
+            { id: 'claude-docs', label: 'Claude Docs', icon: '�' },
+            { id: 'maintenance', label: 'Maintenance', icon: '�' },
             { id: 'insights', label: 'Insights', icon: '💡' }
           ].map((tab) => (
             <button
@@ -500,6 +503,49 @@ export default function AIAutomationDashboard() {
             </div>
           </div>
         )}
+
+        {selectedTab === 'claude-routes' && (
+          <div className="space-y-6">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/50 p-6">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                <span className="mr-2">🤖</span>
+                Claude AI Route Optimization
+              </h3>
+              <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-6 rounded-xl">
+                <ClaudeRouteOptimizer />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {selectedTab === 'claude-docs' && (
+          <div className="space-y-6">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/50 p-6">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                <span className="mr-2">📄</span>
+                Claude AI Document Generation
+              </h3>
+              <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-6 rounded-xl">
+                <ClaudeDocumentGenerator />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {selectedTab === 'maintenance' && (
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/50 p-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+              <span className="mr-2">🔧</span>
+              Predictive Maintenance
+            </h3>
+            <p className="text-gray-600">Predictive maintenance features coming soon...</p>
+          </div>
+        )}
+
+        {selectedTab === 'insights' && (
+          <div>
+            {/* Insights content will be shown below */}
+          </div>
 
         {/* AI Insights */}
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/50 p-6">

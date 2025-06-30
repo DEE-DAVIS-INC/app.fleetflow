@@ -19,6 +19,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.27.3",
     "@heroicons/react": "^2.2.0",
     "@next-auth/firebase-adapter": "^2.0.1",
     "@react-pdf/renderer": "^4.3.0",
