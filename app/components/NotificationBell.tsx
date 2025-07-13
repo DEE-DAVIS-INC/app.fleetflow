@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { collection, query, orderBy, onSnapshot, updateDoc, doc, where } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
+import { supabase } from '../../lib/supabase';
 import { FaBell } from 'react-icons/fa';
 
 export interface Notification {
@@ -8,8 +7,9 @@ export interface Notification {
   message: string;
   type: string;
   read: boolean;
-  timestamp: any;
+  timestamp: string;
   link?: string;
+  user_id: string;
 }
 
 export default function NotificationBell({ userId }: { userId: string }) {
@@ -18,70 +18,130 @@ export default function NotificationBell({ userId }: { userId: string }) {
 
   useEffect(() => {
     if (!userId) return;
-    const q = query(
-      collection(db, 'notifications'),
-      where('userId', '==', userId),
-      orderBy('timestamp', 'desc')
-    );
-    const unsub = onSnapshot(q, (snapshot) => {
-      setNotifications(
-        snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Notification))
-      );
-    });
-    return () => unsub();
+
+    // Load initial notifications
+    loadNotifications();
+
+    // Set up real-time subscription
+    const subscription = supabase
+      .channel('notifications')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'notifications',
+          filter: `user_id=eq.${userId}`,
+        },
+        (payload) => {
+          console.log('Notification change:', payload);
+          loadNotifications(); // Reload notifications when changes occur
+        }
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [userId]);
 
-  const unreadCount = notifications.filter((n) => !n.read).length;
+  const loadNotifications = async () => {
+    if (!userId) return;
 
-  const markAllRead = async () => {
-    notifications.forEach(async (n) => {
-      if (!n.read) {
-        await updateDoc(doc(db, 'notifications', n.id), { read: true });
-      }
-    });
+    const { data, error } = await supabase
+      .from('notifications')
+      .select('*')
+      .eq('user_id', userId)
+      .order('timestamp', { ascending: false });
+
+    if (error) {
+      console.error('Error loading notifications:', error);
+    } else {
+      setNotifications(data || []);
+    }
   };
 
+  const markAllRead = async () => {
+    const { error } = await supabase
+      .from('notifications')
+      .update({ read: true })
+      .eq('user_id', userId)
+      .eq('read', false);
+
+    if (error) {
+      console.error('Error marking notifications as read:', error);
+    } else {
+      setNotifications(notifications.map(n => ({ ...n, read: true })));
+    }
+  };
+
+  const markAsRead = async (notificationId: string) => {
+    const { error } = await supabase
+      .from('notifications')
+      .update({ read: true })
+      .eq('id', notificationId);
+
+    if (error) {
+      console.error('Error marking notification as read:', error);
+    } else {
+      setNotifications(notifications.map(n => 
+        n.id === notificationId ? { ...n, read: true } : n
+      ));
+    }
+  };
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+
   return (
-    <div style={{ position: 'relative' }}>
+    <div className="relative">
       <button
-        onClick={() => {
-          setOpen((v) => !v);
-          if (!open) markAllRead();
-        }}
-        style={{ background: 'none', border: 'none', cursor: 'pointer', position: 'relative' }}
-        aria-label="Notifications"
+        onClick={() => setOpen(!open)}
+        className="relative p-2 text-gray-400 hover:text-gray-500 focus:outline-none"
       >
-        <FaBell size={24} color="#fff" />
+        <FaBell className="h-6 w-6" />
         {unreadCount > 0 && (
-          <span style={{
-            position: 'absolute', top: -4, right: -4,
-            background: 'red', color: 'white', borderRadius: '50%',
-            padding: '2px 6px', fontSize: '0.75rem', fontWeight: 'bold',
-            zIndex: 2
-          }}>{unreadCount}</span>
+          <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center">
+            {unreadCount > 9 ? '9+' : unreadCount}
+          </span>
         )}
       </button>
+
       {open && (
-        <div style={{
-          position: 'absolute', right: 0, top: '120%', minWidth: 320, background: 'white',
-          border: '1px solid #e5e7eb', borderRadius: 12, boxShadow: '0 8px 32px rgba(31,38,135,0.2)',
-          zIndex: 10000, padding: 16
-        }}>
-          <h4 style={{ margin: 0, marginBottom: 8, fontWeight: 600 }}>Notifications</h4>
-          {notifications.length === 0 && <div style={{ color: '#888' }}>No notifications</div>}
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-            {notifications.map((n) => (
-              <li key={n.id} style={{
-                background: n.read ? 'transparent' : 'rgba(33,150,243,0.08)',
-                borderRadius: 8, marginBottom: 8, padding: 8, fontWeight: n.read ? 400 : 600
-              }}>
-                {n.link ? (
-                  <a href={n.link} style={{ color: '#1976d2', textDecoration: 'underline' }}>{n.message}</a>
-                ) : n.message}
-                <span style={{ float: 'right', fontSize: '0.8em', color: '#888' }}>{new Date(n.timestamp?.toDate?.() || n.timestamp).toLocaleString()}</span>
-              </li>
-            ))}
-          </ul>
+        <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+          <div className="p-4 border-b border-gray-200">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900">Notifications</h3>
+              {unreadCount > 0 && (
+                <button
+                  onClick={markAllRead}
+                  className="text-sm text-blue-600 hover:text-blue-700"
+                >
+                  Mark all read
+                </button>
+              )}
+            </div>
+          </div>
+          
+          <div className="max-h-96 overflow-y-auto">
+            {notifications.length === 0 ? (
+              <p className="p-4 text-gray-500 text-center">No notifications</p>
+            ) : (
+              notifications.map((notification) => (
+                <div
+                  key={notification.id}
+                  className={`p-4 border-b border-gray-100 hover:bg-gray-50 ${
+                    !notification.read ? 'bg-blue-50' : ''
+                  }`}
+                  onClick={() => !notification.read && markAsRead(notification.id)}
+                >
+                  <p className="text-sm text-gray-900">{notification.message}</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {new Date(notification.timestamp).toLocaleString()}
+                  </p>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       )}
     </div>
