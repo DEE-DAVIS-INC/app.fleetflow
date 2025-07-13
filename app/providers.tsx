@@ -1,10 +1,9 @@
 'use client';
 
-import { SessionProvider } from 'next-auth/react';
 import { ReactNode } from 'react';
 import { LoadProvider } from './contexts/LoadContext';
 import { ShipperProvider } from './contexts/ShipperContext';
-import { AuthProvider } from './components/AuthProvider';
+import { SupabaseAuthProvider } from './components/SupabaseAuthProvider';
 
 interface ProvidersProps {
   children: ReactNode;
@@ -12,14 +11,12 @@ interface ProvidersProps {
 
 export function Providers({ children }: ProvidersProps) {
   return (
-    <SessionProvider>
-      <AuthProvider>
-        <LoadProvider>
-          <ShipperProvider>
-            {children}
-          </ShipperProvider>
-        </LoadProvider>
-      </AuthProvider>
-    </SessionProvider>
+    <SupabaseAuthProvider>
+      <LoadProvider>
+        <ShipperProvider>
+          {children}
+        </ShipperProvider>
+      </LoadProvider>
+    </SupabaseAuthProvider>
   );
 }
